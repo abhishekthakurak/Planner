@@ -12,4 +12,5 @@ export default {
   pages: resolveApp('src/pages'),
   components: resolveApp('src/components'),
   constants: resolveApp('src/constants'),
+  utils: resolveApp('src/utils')
 }

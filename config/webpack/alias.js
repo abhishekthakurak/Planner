@@ -6,5 +6,6 @@ export default {
     assets: paths.assets,
     pages: paths.pages,
     components: paths.components,
-    constants: paths.constants
+    constants: paths.constants,
+    utils: paths.utils
 }
