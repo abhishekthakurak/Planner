@@ -1,16 +1,16 @@
-import { modalWrapStyle, dataStyle,inputStyle, buttonStyle,errorStyle, bottomButtonBarStyle } from 'components/AddModal/style.js'
+import { modalWrapStyle, dataStyle,inputStyle, buttonStyle,errorStyle, bottomButtonBarStyle } from 'components/Modal/style.js'
 import { createPortal } from 'react-dom'
 import { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-export default function ({setModalShown, title, id}) {
+export default function ({setModalShown, title, id,taskId, isEdit=false, data = {
+    description: '',
+    dueDate: '',
+    assignedTo: ''
+  }}) {
   const dispatch = useDispatch()
   const [error, showError] = useState('')
-  const [task, setTask] = useState({
-        description: '',
-        dueDate: '',
-        assignedTo: ''
-        })
+  const [task, setTask] = useState(data)
 
   const handleChange = useCallback(( key, value) => {
         showError('') 
@@ -27,15 +27,26 @@ export default function ({setModalShown, title, id}) {
            showError('Description and Due Date is required')
            return
         }
-        dispatch({
-                type: 'ADD_TASK',
-                payload: {
-                    id,
-                    planItem: task
-                }
-        })
-        setModalShown(false)
-  }, [task, id, setModalShown, showError,description, dueDate])
+        if (isEdit) {
+          dispatch({
+            type: 'TASK_EDIT',
+            payload: {
+                planId: id,
+                id: taskId,
+                planItem: task
+            }
+    })
+        } else {
+          dispatch({
+                  type: 'ADD_TASK',
+                  payload: {
+                      id,
+                      planItem: task
+                  }
+          })
+      }
+      setModalShown(false)
+  }, [task, id, taskId, setModalShown, showError,description, dueDate])
 
   const onCancel = useCallback(()=>{
         setModalShown(false)
@@ -44,7 +55,7 @@ export default function ({setModalShown, title, id}) {
   const content = (
   <div css={modalWrapStyle} onClick={()=>setModalShown(false)}>
     <div css={dataStyle} onClick={(e)=>{e.stopPropagation()}}>
-        <label>Add task for {title}</label>
+        <label>{isEdit? 'Edit':'Add'} task for {title}</label>
       <input
         css={inputStyle}
         placeholder='Enter task description...'
@@ -52,6 +63,7 @@ export default function ({setModalShown, title, id}) {
         onChange={(event)=>handleChange('description', event.target.value)} />
         <input 
         css={inputStyle}
+        value={dueDate}
         type="date" name="Due Date"
         onChange={(event)=>handleChange('dueDate', event.target.value)}
         ></input>
@@ -65,7 +77,7 @@ export default function ({setModalShown, title, id}) {
         <button
                     css={buttonStyle}
                     onClick={onSave}>
-                    save
+                    {isEdit ? 'edit' : 'save'}
                 </button>
                 <button
                     css={buttonStyle}

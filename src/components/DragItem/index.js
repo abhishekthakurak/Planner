@@ -1,14 +1,19 @@
 import { 
     itemStyle,
-    assigneeStyle
+    assigneeStyle,
+    delayedStyle,
+    completedBeforeTimeStyle,
+    editStyle
 } from 'src/components/DragItem/style.js'
 import { useCallback, Fragment, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import formatDate from 'utils/formatDate'
+import Modal from 'src/components/Modal/index.js'
 
-export default function DragItem ({ planItems, planId }) {
+
+export default function DragItem ({ title, planItems, planId, id }) {
     const dispatch = useDispatch()
-    const [editEnable, setEditEnable] = useState(false)
+    const [editEnable, setEdit] = useState(false)
     
     const handleDragStart = useCallback(({event, planId, index}) => {
         event.dataTransfer.setData('planId', planId)
@@ -34,13 +39,17 @@ export default function DragItem ({ planItems, planId }) {
     }, [])
 
     const changeEdit = useCallback(() => {
-        setEditEnable(true)
+        setEdit(true)
     }, [])
 
     return (
         <Fragment>
-            {planItems.map(({description, assignedTo, dueDate}, index) => (
-                <div css={itemStyle} key={index} draggable='true'
+            {planItems.map((data, index) => {
+            const {description, assignedTo, dueDate} = data
+            const delayedTask =  id !== 'done' && new Date(dueDate).getDate() - new Date().getDate() < 0 
+            const completedBeforeTime =  id === 'done' && new Date(dueDate).getDate() -  new Date().getDate() > 0 
+
+            return (<div css={[itemStyle, delayedTask && delayedStyle, completedBeforeTime && completedBeforeTimeStyle]} key={index} draggable='true'
                     onDragStart={(event) => handleDragStart({event, planId, index})}
                     onDrop={(event) => handleOnDrop({newTaskId: index, event})}
                     onDragOver={handleOnDragOver}
@@ -49,8 +58,11 @@ export default function DragItem ({ planItems, planId }) {
                     <div>{description}</div>
                     <div>{formatDate(dueDate)}</div>
                     <div css={assigneeStyle}>{assignedTo}</div>
+                    <div css={editStyle} onClick={changeEdit}>Edit</div>
+                    {editEnable && <Modal id={planId} title={title} data={data} setModalShown={setEdit} isEdit taskId={index}/>}
                 </div>
-            ))}
+            )
+        })}
         </Fragment>
     )
 }

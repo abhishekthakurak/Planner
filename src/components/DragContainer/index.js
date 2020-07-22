@@ -5,7 +5,7 @@ import {
     buttonStyle,
 } from 'src/components/DragContainer/style.js'
 import DragItem from 'src/components/DragItem/index.js'
-import AddModal from 'src/components/AddModal/index.js'
+import Modal from 'src/components/Modal/index.js'
 import { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 export default function DragContainer ({ data = {}, id }) {
@@ -45,14 +45,14 @@ export default function DragContainer ({ data = {}, id }) {
                 <label css={headerStyle}>
                     {title}
                 </label>
-                <DragItem planItems={planItems} planId={id}/>
+                <DragItem planItems={planItems} planId={id} id={key} {...data}/>
                 <button
                     css={buttonStyle}
                     onClick={handleAdd}>
                     Add Task
                 </button>
 
-                {modalShow && <AddModal id={id} title={title} setModalShown={setModalShown}/>}
+                {modalShow && <Modal id={id} title={title} setModalShown={setModalShown}/>}
             </div>
         </div>
     )
