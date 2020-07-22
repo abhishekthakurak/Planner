@@ -1,10 +1,9 @@
 {
-  "name": "react-redux-boilerplate",
+  "name": "planner",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
-  "homepage": "https://github.com/abhishekthakurak/react-redux-boilerplate",
   "scripts": {
     "start": "yarn && node --es-module-specifier-resolution=node --experimental-modules ./scripts/start.js",
     "build": "NODE_ENV='production' node --es-module-specifier-resolution=node --experimental-modules ./scripts/build.js",

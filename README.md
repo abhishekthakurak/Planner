@@ -1,4 +1,4 @@
-# react-redux-boilerplate
+# planner
 
 Steps to run code
 
